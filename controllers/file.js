@@ -1,16 +1,20 @@
 const path = require('path')
+const { v4  } = require('uuid');
+
 exports.upload_file = async(req,res,next)=>{
 try {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
       }
     sampleFile = req.files.foo;
-    uploadPath =  path.join(__dirname, '..','uploads', sampleFile.name) ;
+
+    fileName = sampleFile.name+v4()
+    uploadPath =  path.join(__dirname, '..','uploads',fileName ) ;
     const fileDetails = {
-        name: req.files.foo.name,
-        mimetype: req.files.foo.mimetype,
-        size: (req.files.foo.size)/1000+" kb",
-        checksum: req.files.foo.md5
+        name: fileName,
+        mimetype: sampleFile.mimetype,
+        size: (sampleFile.size)/1000+" kb",
+        checksum: sampleFile.md5
     }
     sampleFile.mv(uploadPath, function(err) {
         if (err)
